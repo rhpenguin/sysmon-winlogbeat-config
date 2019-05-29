@@ -97,7 +97,7 @@ setup.kibana:
 output.elasticsearch:
   # Array of hosts to connect to.
   hosts: ["log.example.com:9200"]
-  pipeline: my-sysmon-9.01-winlogbeat-6.6.0
+  pipeline: "my-sysmon-9.01-winlogbeat-6.6.0"
 
   # Enabled ilm (beta) to use index lifecycle management instead daily indices.
   #ilm.enabled: false

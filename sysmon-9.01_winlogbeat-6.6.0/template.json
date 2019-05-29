@@ -491,6 +491,10 @@
             "Filter": {
               "type": "text",
               "norms": false
+            },
+            "RuleName": {
+              "type": "text",
+              "norms": false
             }
           }
         },
@@ -561,15 +565,15 @@
         "user": {
           "properties": {
             "identifier": {
-              "type": "text",
+              "type": "keyword",
               "norms": false
             },
             "name": {
-              "type": "text",
+              "type": "keyword",
               "norms": false
             },
             "domain": {
-              "type": "text",
+              "type": "keyword",
               "norms": false
             },
             "type": {

@@ -53,10 +53,8 @@ Elasticsearch config examples (template and ingest/pipeline) for Sysmon + Winlog
 | event_data.Consumer | text | keyword |
 | event_data.Filter | text | keyword |
 | event_data.Operation | text | keyword |
+| event_data.RuleName | text | keyword |
 | task | text | keyword |
-| user.identifier | text | keyword |
-| user.name | text | keyword |
-| user.domain | text | keyword |
 
 #### Usage example
 
