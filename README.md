@@ -56,6 +56,16 @@ Elasticsearch config examples (template and ingest/pipeline) for Sysmon + Winlog
 | event_data.RuleName | text | keyword |
 | task | text | keyword |
 
+
+* Mapping for Sysmon 10.1 + Winlogbeat 6.6.0 (sysmon-10.1_winlogbeat-6.6.0/template.json)
+
+| Field | Updated datatype | Default datatype |
+| ---------- | ------- | ------- |
+| event_data.QueryName| 	text| 	keyword|
+| event_data.QueryResults| 	text| 	keyword|
+| event_data.QueryStatus| 	long| 	keyword|
+| event_data.OriginalFileName| 	text| 	keyword|
+
 #### Usage example
 
 ```text: winlogbeat-6.6.0
@@ -79,6 +89,14 @@ curl -XPUT http://<elasticsearch-address>:9200/_template/winlogbeat-6.6.0 -H 'Co
 | event_data.SourcePort | Convert processor | Convert the socket port-number value to integer. |
 | event_data.DestinationPort | Convert processor | Convert the socket port-number value to integer. |
 | message | Remove processor | Remove the original log message. |
+
+* Processors for Sysmon 10.1 + Winlogbeat 6.6.0  (sysmon-9.01_winlogbeat-6.6.0/pipeline.json)
+
+
+| Field | processor | description |
+| ---------- | ------- | ------- |
+|event_data.QueryResults |Split<br/>Foreach<br/>Gsub |Split the fileld value by record type. Remove prefix(::ffff:) if any. [IPv4-Mapped IPv6 Address]|
+|event_data.QueryStatus	|Convert| Convert the error code value to integer.|
 
 #### Usage example
 
@@ -108,5 +126,22 @@ diff winlogbeat.yml.org winlogbeat.yml
 
 ```
 
+
+* **winlogbeat.yml** for Sysmon 10.1 + Winlogbeat 6.6.0  (sysmon-10.1_winlogbeat-6.6.0/winlogbeat-6.6.0/winlogbeat.yml)
+
+See fields added to the original winlogbeat.yml (winlogbeat.yml.org).
+
+```text: winlogbeat-6.6.0
+cd sysmon-10.1_winlogbeat-6.6.0/winlogbeat-6.6.0/
+diff winlogbeat.yml.org winlogbeat.yml
+24a25
+>   - name: "Microsoft-Windows-Sysmon/Operational"
+98c99,100
+<   hosts: ["localhost:9200"]
+---
+>   hosts: ["<elasticsearch-address>:9200"]
+>   pipeline: my-sysmon-10.1-winlogbeat-6.6.0
+
+```
 
 
