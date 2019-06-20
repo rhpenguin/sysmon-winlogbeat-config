@@ -1,0 +1,438 @@
+{
+  "index_patterns": [
+    "winlogbeat-6.6.0-*"
+  ],
+  "settings": {
+    "index": {
+      "mapping": {
+        "total_fields": {
+          "limit": "10000"
+        }
+      },
+      "refresh_interval": "5s",
+      "number_of_routing_shards": "30",
+      "number_of_shards": "3"
+    }
+  },
+  "mappings": {
+    "doc": {
+      "_meta": {
+        "version": "6.6.0"
+      },
+      "date_detection": false,
+      "dynamic_templates": [
+        {
+          "event_data": {
+            "mapping": {
+              "type": "keyword"
+            },
+            "match_mapping_type": "string",
+            "path_match": "event_data.*"
+          }
+        },
+        {
+          "user_data": {
+            "mapping": {
+              "type": "keyword"
+            },
+            "match_mapping_type": "string",
+            "path_match": "user_data.*"
+          }
+        },
+        {
+          "fields": {
+            "mapping": {
+              "type": "keyword"
+            },
+            "match_mapping_type": "string",
+            "path_match": "fields.*"
+          }
+        },
+        {
+          "docker.container.labels": {
+            "mapping": {
+              "type": "keyword"
+            },
+            "match_mapping_type": "string",
+            "path_match": "docker.container.labels.*"
+          }
+        },
+        {
+          "strings_as_keyword": {
+            "mapping": {
+              "ignore_above": 1024,
+              "type": "keyword"
+            },
+            "match_mapping_type": "string"
+          }
+        }
+      ],
+      "properties": {
+        "xml": {
+          "type": "text",
+          "norms": false
+        },
+        "kubernetes": {
+          "properties": {
+            "pod": {
+              "properties": {
+                "name": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "uid": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                }
+              }
+            },
+            "namespace": {
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "node": {
+              "properties": {
+                "name": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                }
+              }
+            },
+            "labels": {
+              "type": "object"
+            },
+            "annotations": {
+              "type": "object"
+            },
+            "container": {
+              "properties": {
+                "name": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "image": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                }
+              }
+            }
+          }
+        },
+        "computer_name": {
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "message": {
+          "type": "text",
+          "norms": false
+        },
+        "message_error": {
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "thread_id": {
+          "type": "long"
+        },
+        "error": {
+          "properties": {
+            "message": {
+              "type": "text",
+              "norms": false
+            },
+            "code": {
+              "type": "long"
+            },
+            "type": {
+              "type": "keyword",
+              "ignore_above": 1024
+            }
+          }
+        },
+        "record_number": {
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "process_id": {
+          "type": "long"
+        },
+        "user_data": {
+          "type": "object"
+        },
+        "fields": {
+          "type": "object"
+        },
+        "type": {
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "activity_id": {
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "host": {
+          "properties": {
+            "mac": {
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "hostname": {
+              "type": "alias",
+              "path": "beat.hostname"
+            },
+            "name": {
+              "ignore_above": 1024,
+              "type": "keyword"
+            },
+            "id": {
+              "ignore_above": 1024,
+              "type": "keyword"
+            },
+            "architecture": {
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "os": {
+              "properties": {
+                "platform": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "version": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "family": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                }
+              }
+            },
+            "ip": {
+              "type": "ip"
+            }
+          }
+        },
+        "cloud": {
+          "properties": {
+            "project": {
+              "properties": {
+                "id": {
+                  "type": "alias",
+                  "path": "meta.cloud.project_id"
+                }
+              }
+            },
+            "region": {
+              "type": "alias",
+              "path": "meta.cloud.region"
+            },
+            "provider": {
+              "type": "alias",
+              "path": "meta.cloud.provider"
+            },
+            "instance": {
+              "properties": {
+                "id": {
+                  "type": "alias",
+                  "path": "meta.cloud.instance_id"
+                },
+                "name": {
+                  "type": "alias",
+                  "path": "meta.cloud.instance_name"
+                }
+              }
+            },
+            "machine": {
+              "properties": {
+                "type": {
+                  "type": "alias",
+                  "path": "meta.cloud.machine_type"
+                }
+              }
+            },
+            "availability_zone": {
+              "type": "alias",
+              "path": "meta.cloud.availability_zone"
+            }
+          }
+        },
+        "level": {
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "provider_guid": {
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "container": {
+          "properties": {
+            "id": {
+              "type": "alias",
+              "path": "docker.container.id"
+            },
+            "name": {
+              "type": "alias",
+              "path": "docker.container.name"
+            },
+            "image": {
+              "properties": {
+                "name": {
+                  "type": "alias",
+                  "path": "docker.container.image"
+                }
+              }
+            }
+          }
+        },
+        "meta": {
+          "properties": {
+            "cloud": {
+              "properties": {
+                "availability_zone": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "project_id": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                },
+                "region": {
+                  "ignore_above": 1024,
+                  "type": "keyword"
+                },
+                "provider": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "instance_id": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "instance_name": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "machine_type": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                }
+              }
+            }
+          }
+        },
+        "tags": {
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "event_data": {
+          "type": "object"
+        },
+        "event_id": {
+          "type": "long"
+        },
+        "log_name": {
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "version": {
+          "type": "long"
+        },
+        "related_activity_id": {
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "event": {
+          "properties": {
+            "timezone": {
+              "path": "beat.timezone",
+              "type": "alias"
+            }
+          }
+        },
+        "docker": {
+          "properties": {
+            "container": {
+              "properties": {
+                "image": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "name": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                },
+                "labels": {
+                  "type": "object"
+                },
+                "id": {
+                  "type": "keyword",
+                  "ignore_above": 1024
+                }
+              }
+            }
+          }
+        },
+        "keywords": {
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "task": {
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "@timestamp": {
+          "type": "date"
+        },
+        "opcode": {
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "source_name": {
+          "type": "keyword",
+          "ignore_above": 1024
+        },
+        "user": {
+          "properties": {
+            "identifier": {
+              "ignore_above": 1024,
+              "type": "keyword"
+            },
+            "name": {
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "domain": {
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "type": {
+              "type": "keyword",
+              "ignore_above": 1024
+            }
+          }
+        },
+        "beat": {
+          "properties": {
+            "name": {
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "hostname": {
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "timezone": {
+              "type": "keyword",
+              "ignore_above": 1024
+            },
+            "version": {
+              "ignore_above": 1024,
+              "type": "keyword"
+            }
+          }
+        }
+      }
+    }
+  },
+  "aliases": {}
+}

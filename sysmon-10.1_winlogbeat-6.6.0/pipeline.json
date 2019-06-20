@@ -1,0 +1,142 @@
+{
+  "description": "Winlogbeat-v6.6.0 pipiline for Sysmon-v10.1.",
+  "processors": [
+    {
+      "date": {
+        "field": "event_data.UtcTime",
+        "formats": [
+          "yyyy-MM-dd HH:mm:ss.SSS"
+        ],
+        "if": "ctx.source_name == \"Microsoft-Windows-Sysmon\"",
+        "ignore_failure": true
+      }
+    },
+    {
+      "split": {
+        "field": "event_data.Hashes",
+        "separator": ",",
+        "if": "ctx.source_name == \"Microsoft-Windows-Sysmon\"",
+        "ignore_missing": true,
+        "ignore_failure": true
+      }
+    },
+    {
+      "split": {
+        "field": "event_data.Hash",
+        "separator": ",",
+        "if": "ctx.source_name == \"Microsoft-Windows-Sysmon\"",
+        "ignore_missing": true,
+        "ignore_failure": true
+      }
+    },
+    {
+      "split": {
+        "field": "event_data.QueryResults",
+        "separator": ";",
+        "if": "ctx.source_name == \"Microsoft-Windows-Sysmon\" && ctx.event_id == 22",
+        "ignore_missing": true,
+        "ignore_failure": true
+      }
+    },
+    {
+      "foreach" : {
+        "field" : "event_data.QueryResults",
+        "processor" : {
+          "gsub": {
+            "field": "_ingest._value",
+            "pattern": ":  ",
+            "replacement": ":",
+            "ignore_missing": true,
+            "ignore_failure": true
+          }
+        },
+        "if": "ctx.source_name == \"Microsoft-Windows-Sysmon\" && ctx.event_id == 22",
+        "ignore_failure": true
+      }
+    },
+    {
+      "foreach" : {
+        "field" : "event_data.QueryResults",
+        "processor" : {
+          "gsub": {
+            "field": "_ingest._value",
+            "pattern": "\\:\\:ffff\\:",
+            "replacement": "",
+            "ignore_missing": true,
+            "ignore_failure": true
+          }
+        },
+        "if": "ctx.source_name == \"Microsoft-Windows-Sysmon\" && ctx.event_id == 22",
+        "ignore_failure": true
+      }
+    },
+    {
+      "date": {
+        "field": "event_data.UtcTime",
+        "target_field": "event_data.UtcTime",
+        "formats": [
+          "yyyy-MM-dd HH:mm:ss.SSS"
+        ],
+        "if": "ctx.source_name == \"Microsoft-Windows-Sysmon\"",
+        "ignore_failure": true
+      }
+    },
+    {
+      "date": {
+        "field": "event_data.CreationUtcTime",
+        "target_field": "event_data.CreationUtcTime",
+        "formats": [
+          "yyyy-MM-dd HH:mm:ss.SSS"
+        ],
+        "if": "ctx.source_name == \"Microsoft-Windows-Sysmon\"",
+        "ignore_failure": true
+      }
+    },
+    {
+      "date": {
+        "field": "event_data.PreviousCreationUtcTime",
+        "target_field": "event_data.PreviousCreationUtcTime",
+        "formats": [
+          "yyyy-MM-dd HH:mm:ss.SSS"
+        ],
+        "if": "ctx.source_name == \"Microsoft-Windows-Sysmon\"",
+        "ignore_failure": true
+      }
+    },
+    {
+      "convert": {
+        "field": "event_data.SourcePort",
+        "type": "integer",
+        "if": "ctx.source_name == \"Microsoft-Windows-Sysmon\" && ctx.event_id == 3",
+        "ignore_missing": true,
+        "ignore_failure": true
+      }
+    },
+    {
+      "convert": {
+        "field": "event_data.DestinationPort",
+        "type": "integer",
+        "if": "ctx.source_name == \"Microsoft-Windows-Sysmon\" && ctx.event_id == 3",
+        "ignore_missing": true,
+        "ignore_failure": true
+      }
+    },
+    {
+      "convert": {
+        "field": "event_data.QueryStatus",
+        "type": "long",
+        "if": "ctx.source_name == \"Microsoft-Windows-Sysmon\" && ctx.event_id == 22",
+        "ignore_missing": true,
+        "ignore_failure": true
+      }
+    },
+    {
+      "remove": {
+        "field": "message",
+        "if": "ctx.source_name == \"Microsoft-Windows-Sysmon\"",
+        "ignore_missing": true,
+        "ignore_failure": true
+      }
+    }
+  ]
+}
